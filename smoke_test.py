@@ -4,24 +4,26 @@
 # MAGIC Verifies the cluster's instance profile can read/write the data bucket.
 
 # COMMAND ----------
-# Cell 1 — Resolve the data bucket name from cluster tags
+# Cell 1 — Define the data bucket manually
 import os
 
-DATA_BUCKET = "dbx-data-" + spark.conf.get(
-    "spark.databricks.clusterUsageTags.cloudProviderAccountId", "UNKNOWN"
-)
+# REPLACE THIS with your actual bucket name from AWS S3!
+DATA_BUCKET = "dbx-data-your-name-1234 " 
+
 print("Data bucket:", DATA_BUCKET)
 
 # COMMAND ----------
-# Cell 2 — Confirm the instance profile is active (prints assumed-role ARN)
-import subprocess
+# Cell 2 — Confirm the instance profile is active using Boto3
+import boto3
 
-result = subprocess.run(
-    ["aws", "sts", "get-caller-identity"],
-    capture_output=True,
-    text=True
-)
-print(result.stdout)
+try:
+    sts = boto3.client('sts')
+    identity = sts.get_caller_identity()
+    print("Success! Cluster is running with Assumed Role:")
+    print(identity['Arn'])
+except Exception as e:
+    print("Error getting IAM Identity. Is the instance profile attached to the cluster?")
+    print(e)
 
 # COMMAND ----------
 # Cell 3 — List raw/ prefix in the data bucket (confirms S3 read access)
