@@ -8,7 +8,7 @@
 import os
 
 # REPLACE THIS with your actual bucket name from AWS S3!
-DATA_BUCKET = "dbx-data-put-your-actual-suffix-here" 
+DATA_BUCKET = "dbx-data-your-name-1234" 
 
 print("Data bucket:", DATA_BUCKET)
 
